@@ -29,6 +29,9 @@ RUN OPENCLAW_A2UI_SKIP_MISSING=1 pnpm build
 ENV OPENCLAW_PREFER_PNPM=1
 RUN pnpm ui:build
 
+COPY cloudrun-entrypoint.sh /app/cloudrun-entrypoint.sh
+RUN chmod +x /app/cloudrun-entrypoint.sh
+
 ENV NODE_ENV=production
 
 # Allow non-root user to write temp files during runtime/tests.
@@ -45,4 +48,4 @@ USER node
 # For container platforms requiring external health checks:
 #   1. Set OPENCLAW_GATEWAY_TOKEN or OPENCLAW_GATEWAY_PASSWORD env var
 #   2. Override CMD: ["node","dist/index.js","gateway","--allow-unconfigured","--bind","lan"]
-CMD ["node", "dist/index.js", "gateway", "--allow-unconfigured"]
+CMD ["/app/cloudrun-entrypoint.sh", "gateway", "--allow-unconfigured"]
